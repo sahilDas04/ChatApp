@@ -1,0 +1,1 @@
+"""ChatShare Backend Application."""
