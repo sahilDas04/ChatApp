@@ -1,9 +1,19 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!BASE_URL) {
+  const msg =
+    '⚠️  VITE_API_URL is not set!\n' +
+    'Add it to your Vercel project:\n' +
+    'Settings → Environment Variables → VITE_API_URL = https://<your-render-app>.onrender.com/api/v1';
+  console.error(msg);
+}
+
+const API_BASE = BASE_URL || 'http://localhost:8000/api/v1';
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 

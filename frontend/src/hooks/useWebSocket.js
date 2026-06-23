@@ -1,7 +1,10 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-const WS_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1')
-  .replace(/^http/, 'ws');
+// Convert https://host/api/v1 → wss://host/api/v1
+// Convert http://host/api/v1  → ws://host/api/v1
+const HTTP_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const WS_BASE = HTTP_BASE.replace(/^https:\/\//, 'wss://').replace(/^http:\/\//, 'ws://');
+
 
 /**
  * useWebSocket — connects to the backend WS endpoint for a room.
