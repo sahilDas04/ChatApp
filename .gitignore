@@ -224,3 +224,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 frontend/dist/
+
+# Uploaded files (runtime data - not for version control)
+backend/uploads/
+
+# SQLite dev databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db

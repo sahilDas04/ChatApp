@@ -9,7 +9,7 @@ function getAvatarSrc(url) {
   return `${API_BASE}${url}`;
 }
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -18,11 +18,16 @@ export default function Sidebar() {
     navigate('/');
   };
 
+  const handleNavClick = () => {
+    // Close sidebar on mobile when navigating
+    onClose?.();
+  };
+
   const initial = user?.username?.[0]?.toUpperCase() || '?';
   const avatarSrc = getAvatarSrc(user?.avatar_url);
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${open ? ' open' : ''}`}>
       <div className="sidebar-logo">
         <span>💬 ChatShare</span>
       </div>
@@ -47,13 +52,25 @@ export default function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        <NavLink to="/dashboard" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+          onClick={handleNavClick}
+        >
           <span className="nav-icon">🏠</span> Dashboard
         </NavLink>
-        <NavLink to="/profile" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+          onClick={handleNavClick}
+        >
           <span className="nav-icon">👤</span> Profile
         </NavLink>
-        <NavLink to="/admin" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+        <NavLink
+          to="/admin"
+          className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+          onClick={handleNavClick}
+        >
           <span className="nav-icon">🛡️</span> Admin
         </NavLink>
       </nav>

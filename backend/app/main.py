@@ -24,7 +24,7 @@ logging.basicConfig(
     level=logging.DEBUG if settings.DEBUG else logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
 )
-logger = logging.getLogger("chatshare")
+logger = logging.getLogger("chatshare") 
 
 
 # ── Rate Limiter ──────────────────────────────────────────────────────

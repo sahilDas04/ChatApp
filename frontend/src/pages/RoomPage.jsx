@@ -143,7 +143,7 @@ export default function RoomPage() {
       </div>
 
       {/* Chat */}
-      {tab === 'chat' && <ChatWindow roomId={roomId} />}
+      {tab === 'chat' && <ChatWindow roomId={roomId} userRole={userRole} />}
 
       {/* Files */}
       {tab === 'files' && (

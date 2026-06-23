@@ -15,9 +15,12 @@ from app.core.config import settings
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
-    pool_size=20,
-    max_overflow=10,
-    pool_pre_ping=True,
+    # Render free tier: keep pool small (Postgres allows max 25 concurrent connections)
+    pool_size=5,
+    max_overflow=5,
+    pool_timeout=30,
+    pool_recycle=1800,   # Recycle connections after 30 min to avoid idle timeout drops
+    pool_pre_ping=True,  # Verify connection health before using (critical after Render sleep)
 )
 
 async_session_factory = async_sessionmaker(
