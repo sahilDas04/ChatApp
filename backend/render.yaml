@@ -16,7 +16,11 @@ services:
       - key: REFRESH_TOKEN_EXPIRE_DAYS
         value: "7"
       - key: CORS_ORIGINS
+        # Add your Vercel URL here e.g. https://chatapp-xyz.vercel.app
         sync: false
+      - key: CORS_ORIGIN_REGEX
+        # Allows ALL *.vercel.app subdomains (preview + production)
+        value: "https://.*\\.vercel\\.app"
       - key: UPLOAD_DIR
         value: "/tmp/uploads"
       - key: MAX_FILE_SIZE_MB

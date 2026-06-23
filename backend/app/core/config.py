@@ -33,7 +33,11 @@ class Settings(BaseSettings):
     ALLOWED_EXTENSIONS: str = ".pdf,.docx,.xlsx,.txt,.png,.jpg,.jpeg,.gif,.zip"
 
     # ── CORS ──────────────────────────────────────────────────────────
-    CORS_ORIGINS: str = "http://localhost:8501,http://localhost:3000"
+    CORS_ORIGINS: str = "http://localhost:8501,http://localhost:3000,http://localhost:5173"
+    # Regex to allow all Vercel preview deployments automatically.
+    # e.g. "https://.*\.vercel\.app" covers *.vercel.app
+    # Set empty string to disable regex matching.
+    CORS_ORIGIN_REGEX: str = "https://.*\.vercel\.app"
 
     # ── Server ────────────────────────────────────────────────────────
     HOST: str = "0.0.0.0"
