@@ -33,7 +33,6 @@ async def create_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> RoomResponse:
-    """Create a new chat room."""
     service = RoomService(db)
     return await service.create_room(data, user.id)
 
@@ -47,9 +46,27 @@ async def list_rooms(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> RoomListResponse:
-    """List rooms with optional search and pagination."""
     service = RoomService(db)
-    return await service.list_rooms(user.id, search=search, my_rooms=my_rooms, page=page, size=size)
+    return await service.list_rooms(
+        user.id,
+        search=search,
+        my_rooms=my_rooms,
+        page=page,
+        size=size,
+    )
+
+
+
+
+@router.get("/me/requests", response_model=list[JoinRequestResponse])
+async def get_my_pending_requests(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[JoinRequestResponse]:
+    service = RoomService(db)
+    return await service.get_user_pending_requests(user.id)
+
+
 
 
 @router.get("/{room_id}", response_model=RoomResponse)
@@ -58,7 +75,6 @@ async def get_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> RoomResponse:
-    """Get room details."""
     service = RoomService(db)
     return await service.get_room(room_id, user.id)
 
@@ -70,7 +86,6 @@ async def update_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> RoomResponse:
-    """Update room settings (creator only)."""
     service = RoomService(db)
     return await service.update_room(room_id, data, user.id)
 
@@ -81,13 +96,11 @@ async def delete_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> MessageResponse:
-    """Delete a room permanently (creator only)."""
     service = RoomService(db)
     await service.delete_room(room_id, user.id)
     return MessageResponse(message="Room deleted successfully")
 
 
-# ── Membership ────────────────────────────────────────────────────
 
 
 @router.post("/{room_id}/join", response_model=MessageResponse)
@@ -96,7 +109,6 @@ async def join_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> MessageResponse:
-    """Join a public room or request access to a private room."""
     service = RoomService(db)
     result = await service.join_room(room_id, user.id)
     return MessageResponse(message=result["message"])
@@ -108,7 +120,6 @@ async def leave_room(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> MessageResponse:
-    """Leave a room."""
     service = RoomService(db)
     await service.leave_room(room_id, user.id)
     return MessageResponse(message="Left the room")
@@ -120,7 +131,6 @@ async def get_members(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[RoomMemberResponse]:
-    """List members of a room."""
     service = RoomService(db)
     return await service.get_members(room_id, user.id)
 
@@ -132,7 +142,6 @@ async def remove_member(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> MessageResponse:
-    """Remove a member from the room (admin/creator only)."""
     service = RoomService(db)
     await service.remove_member(room_id, target_user_id, user.id)
     return MessageResponse(message="Member removed")
@@ -146,12 +155,14 @@ async def update_member_role(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> RoomMemberResponse:
-    """Change a member's role (creator only)."""
     service = RoomService(db)
-    return await service.update_member_role(room_id, target_user_id, data.role, user.id)
+    return await service.update_member_role(
+        room_id,
+        target_user_id,
+        data.role,
+        user.id,
+    )
 
-
-# ── Join Requests ─────────────────────────────────────────────────
 
 
 @router.get("/{room_id}/requests", response_model=list[JoinRequestResponse])
@@ -161,7 +172,6 @@ async def get_join_requests(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[JoinRequestResponse]:
-    """List join requests for a room (admin/creator only)."""
     service = RoomService(db)
     return await service.get_join_requests(room_id, user.id, status)
 
@@ -174,16 +184,10 @@ async def handle_join_request(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> JoinRequestResponse:
-    """Approve or reject a join request (admin/creator only)."""
     service = RoomService(db)
-    return await service.handle_join_request(room_id, request_id, data.status, user.id)
-
-
-@router.get("/me/requests", response_model=list[JoinRequestResponse])
-async def get_my_pending_requests(
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-) -> list[JoinRequestResponse]:
-    """Get current user's pending join requests."""
-    service = RoomService(db)
-    return await service.get_user_pending_requests(user.id)
+    return await service.handle_join_request(
+        room_id,
+        request_id,
+        data.status,
+        user.id,
+    )
